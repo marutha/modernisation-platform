@@ -1,0 +1,2 @@
+dynamodb_table: "modernisation-platform-terraform-state-lock"
+message: "Hello, "

@@ -12,19 +12,20 @@ locals {
   }
 
   other_cidr_ranges = {
-    cloud-platform                   = "172.20.0.0/16"
+    alpha-vpn                        = "100.64.0.0/16"
     analytical-platform-airflow-dev  = "10.200.0.0/16"
     analytical-platform-airflow-prod = "10.201.0.0/16"
+    atos_arkc_ras                    = "10.175.0.0/16" # for DOM1 devices connected to Cisco RAS VPN
+    atos_arkf_ras                    = "10.176.0.0/16" # for DOM1 devices connected to Cisco RAS VPN
+    cloud-platform                   = "172.20.0.0/16"
     global-protect                   = "10.184.0.0/16"
+    i2n                              = "10.110.0.0/16"
+    moj-core-azure-1                 = "10.50.25.0/27"
+    moj-core-azure-2                 = "10.50.26.0/24"
     parole-board                     = "10.50.0.0/16"
     psn                              = "51.0.0.0/8"
     psn-ppud                         = "51.247.2.115/32"
-    moj-core-azure-1                 = "10.50.25.0/27"
-    moj-core-azure-2                 = "10.50.26.0/24"
-    i2n                              = "10.110.0.0/16"
-    atos_arkc_ras                    = "10.175.0.0/16" # for DOM1 devices connected to Cisco RAS VPN
-    atos_arkf_ras                    = "10.176.0.0/16" # for DOM1 devices connected to Cisco RAS VPN
-    vodafone_wan_nicts_aggregate     = "10.80.0.0/12"  # for devices connected to Prison Networks
+    vodafone_wan_nicts_aggregate     = "10.80.0.0/12" # for devices connected to Prison Networks
 
     # hmpps azure cidr ranges
     noms-live-vnet                 = "10.40.0.0/18"
@@ -46,6 +47,8 @@ locals {
     nomisapi-prod-root-vnet        = "10.47.0.128/26"
 
     # hmpps aws cidr ranges
+    delius-eng-dev  = "10.161.98.0/25"
+    delius-eng-prod = "10.160.98.0/25"
     delius-core-dev = "10.161.20.0/22"
     delius-mis-dev  = "10.162.32.0/20"
     delius-test     = "10.162.0.0/20"

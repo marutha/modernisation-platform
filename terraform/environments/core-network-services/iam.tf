@@ -2,6 +2,11 @@ data "aws_iam_role" "vpc-flow-log" {
   name = "AWSVPCFlowLog"
 }
 
+data "aws_route53_zone" "portal-development" {
+  name         = "dev.legalservices.gov.uk."
+  private_zone = true
+}
+
 # Role to allow ci/cd to update DNS records for ACM certificate validation
 resource "aws_iam_role" "dns" {
   #checkov:skip=CKV_AWS_60:Wildcard constrained by condition checks
@@ -73,7 +78,8 @@ resource "aws_iam_role_policy" "dns" {
           [for zone in aws_route53_zone.application_zones : format("arn:aws:route53:::hostedzone/%s", zone.id)],
           [
             "arn:aws:route53:::hostedzone/${aws_route53_zone.modernisation-platform.id}",
-            "arn:aws:route53:::hostedzone/${aws_route53_zone.modernisation-platform-internal.id}"
+            "arn:aws:route53:::hostedzone/${aws_route53_zone.modernisation-platform-internal.id}",
+            format("arn:aws:route53:::hostedzone/%s", data.aws_route53_zone.portal-development.zone_id)
           ]
         )
       }

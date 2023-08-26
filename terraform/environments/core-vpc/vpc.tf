@@ -85,7 +85,7 @@ locals {
 module "vpc" {
   for_each = local.vpcs[terraform.workspace]
 
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-member-vpc?ref=bdd69b375c09555389089d65b3d14014ccfdcfec" #v2.1.1
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-member-vpc?ref=e8447fc0906270e0e67bf329e8355cd306ef9fef" #v2.2.0
 
   subnet_sets = { for key, subnet in each.value.cidr.subnet_sets : key => subnet.cidr }
 
@@ -187,26 +187,17 @@ module "dns_zone_extend" {
   vpc_id      = module.vpc[each.key].vpc_id
   dns_domain  = ".modernisation-platform.internal"
 }
-#Locals needed for the private dns zone extend module
-locals {
-  private-application-zones = {
-    laa-development = "aws.dev.legalservices.gov.uk"
-    laa-production  = "aws.prd.legalservices.gov.uk"
-  }
-}
 
-
-module "private_dns_zone_extend" {
+module "dns_zone_extend_private" {
+  source = "../../modules/dns-zone-extend-private"
   providers = {
     aws.core-network-services = aws.core-network-services
     aws.core-vpc              = aws
   }
 
-  for_each           = local.vpcs[terraform.workspace]
-  source             = "../../modules/private-dns-zone-extend"
-  business_unit_name = local.private-application-zones[each.key]
-  vpc_id             = module.vpc[each.key].vpc_id
-
+  for_each  = local.vpcs[terraform.workspace]
+  zone_name = { for key, zone in each.value.options.additional_private_zones : key => zone }
+  vpc_id    = module.vpc[each.key].vpc_id
 }
 
 resource "aws_iam_role" "member-delegation" {

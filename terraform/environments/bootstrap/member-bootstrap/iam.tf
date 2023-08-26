@@ -84,6 +84,12 @@ data "aws_iam_policy_document" "member-access" {
       "ds:UpdateSettings",
       "dynamodb:*",
       "ebs:*",
+      "ec2:CreateVpcEndpointServiceConfiguration",
+      "ec2:DeleteVpcEndpointServiceConfigurations",
+      "ec2:ModifyVpcEndpointServiceConfiguration",
+      "ec2:DescribeVpcEndpointServiceConfigurations",
+      "ec2:DescribeVpcEndpointServicePermissions",
+      "ec2:ModifyVpcEndpointServicePermissions",
       "ec2:Describe*",
       "ec2:*SecurityGroup*",
       "ec2:*KeyPair*",
@@ -110,6 +116,7 @@ data "aws_iam_policy_document" "member-access" {
       "elasticfilesystem:*",
       "elasticloadbalancing:*",
       "events:*",
+      "fsx:*",
       "firehose:*",
       "glacier:*",
       "glue:*",
@@ -268,7 +275,9 @@ data "aws_iam_policy_document" "member-access-us-east" {
     #checkov:skip=CKV_AWS_356: Needs to access multiple resources
     effect = "Allow"
     actions = ["acm:*",
-      "logs:*"
+      "logs:*",
+      "waf:*",
+      "wafv2:*"
     ]
     resources = ["*"] #tfsec:ignore:AWS099 tfsec:ignore:AWS097
   }

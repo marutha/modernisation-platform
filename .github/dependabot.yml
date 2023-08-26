@@ -140,6 +140,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "terraform"
+    directory: "/terraform/environments/hmpps-domain-services"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "terraform"
     directory: "/terraform/environments/hmpps-intelligence-management"
     schedule:
       interval: "daily"
@@ -301,6 +305,10 @@ updates:
       interval: "daily"
   - package-ecosystem: "terraform"
     directory: "/terraform/modules/dns-zone-extend"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "terraform"
+    directory: "/terraform/modules/dns-zone-extend-private"
     schedule:
       interval: "daily"
   - package-ecosystem: "terraform"

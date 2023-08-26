@@ -136,6 +136,7 @@ data "aws_iam_policy_document" "developer_additional" {
       "ec2:DescribeVolumes",
       "ec2:DescribeInstances",
       "ec2:DescribeInstanceTypes",
+      "ec2-instance-connect:SendSerialConsoleSSHPublicKey",
       "ecr:DeleteRepository",
       "ecs:StartTask",
       "ecs:StopTask",
@@ -443,7 +444,8 @@ data "aws_iam_policy_document" "sandbox_additional" {
       "rhelkb:GetRhelURL",
       "identitystore:DescribeUser",
       "sso:ListDirectoryAssociations",
-      "wellarchitected:*"
+      "wellarchitected:*",
+      "backup:StartRestoreJob"
     ]
     resources = ["*"] #tfsec:ignore:AWS099 tfsec:ignore:AWS097
   }
@@ -478,6 +480,7 @@ data "aws_iam_policy_document" "migration_additional" {
       "drs:*",
       "mgh:*",
       "mgn:*",
+      "sts:DecodeAuthorizationMessage",
       "migrationhub-strategy:*"
     ]
     resources = ["*"] #tfsec:ignore:AWS099 tfsec:ignore:AWS097
@@ -495,6 +498,16 @@ data "aws_iam_policy_document" "migration_additional" {
       "iam:UpdateAccessKey"
     ]
     resources = ["*"]
+  }
+
+  statement {
+    sid    = "migrationPassRole"
+    effect = "Allow"
+    actions = [
+      "iam:GetRole",
+      "iam:PassRole"
+    ]
+    resources = ["arn:aws:iam::*:role/service-role/AWSApplicationMigrationConversionServerRole"]
   }
 }
 

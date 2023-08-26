@@ -11,6 +11,7 @@ resource "aws_iam_group" "cicd_member_group" {
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "policy" {
+  #checkov:skip=CKV_AWS_286
   #checkov:skip=CKV_AWS_289
   #checkov:skip=CKV_AWS_288
   #checkov:skip=CKV_AWS_290
@@ -87,6 +88,9 @@ resource "aws_iam_policy" "policy" {
           "kms:Decrypt",
           "kms:GenerateDataKey",
           "logs:GetLogEvents",
+          "logs:FilterLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups",
           "s3:GetBucketLocation",
           "s3:ListBucket",
           "s3:ListAllMyBuckets",
@@ -97,7 +101,8 @@ resource "aws_iam_policy" "policy" {
           "ssm:GetParameter",
           "lambda:ListFunctions",
           "lambda:InvokeFunction",
-          "lambda:InvokeFunctionUrl"
+          "lambda:InvokeFunctionUrl",
+          "lambda:UpdateFunctionCode"
         ]
         Effect   = "Allow"
         Resource = "*"
@@ -107,21 +112,26 @@ resource "aws_iam_policy" "policy" {
 }
 
 resource "aws_iam_policy" "ssm_policy" {
+  #checkov:skip=CKV_AWS_288
+  #checkov:skip=CKV_AWS_289
+  #checkov:skip=CKV_AWS_290
+  #checkov:skip=CKV_AWS_355: Allows access to multiple unknown resources
   name        = "cicd-member-ssm-policy"
   description = "IAM Policy for CICD member user"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
+        Sid = "StartSession"
         Action = [
           "ssm:StartSession",
         ]
-        Effect   = "Allow"
-        Resource = "arn:aws:eu-west-2:${data.aws_caller_identity.current.account_id}:instance/*}"
+        Effect = "Allow"
+        Resource = ["arn:aws:ec2:eu-west-2:${data.aws_caller_identity.current.account_id}:instance/*",
+        "arn:aws:ssm:region:${data.aws_caller_identity.current.account_id}:document/SSM-SessionManagerRunShell"]
       },
-    ]
-    Statement = [
       {
+        Sid = "WildcardSSM"
         Action = [
           "ssm:DescribeSessions",
           "ssm:GetConnectionStatus",
@@ -134,16 +144,15 @@ resource "aws_iam_policy" "ssm_policy" {
         Effect   = "Allow"
         Resource = "*"
       },
-    ]
-    Statement = [
       {
+        Sid = "SessionManagement"
         Action = [
           "ssm:TerminateSession",
           "ssm:ResumeSession"
         ]
         Effect   = "Allow"
         Resource = "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:session/${aws_iam_user.cicd_member_user.name}*"
-      },
+      }
     ]
   })
 }
